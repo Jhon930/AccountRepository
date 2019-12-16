@@ -18,7 +18,7 @@ public interface AccountService {
     
     public Flux<Account> findByPersonId(String id);
     
-    //public Mono<Account> update(Account account, String id);
+    public Mono<Account> update(Account account, String id);
     
     //public Mono<Void> delete(String id);
     

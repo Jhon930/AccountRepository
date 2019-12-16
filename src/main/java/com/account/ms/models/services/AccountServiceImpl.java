@@ -52,6 +52,7 @@ public class AccountServiceImpl implements AccountService {
 		return srepository.save(savingAccount);
 	}
 
+	@Override
 	public Flux<Account> findByPersonId(String id){
 		
 		return repository.findByPersonId(id);
@@ -61,6 +62,12 @@ public class AccountServiceImpl implements AccountService {
 		// TODO Auto-generated method stub
 		return repository.delete(account);
 	}*/
+
+	@Override
+	public Mono<Account> update(Account account, String id) {
+		// TODO Auto-generated method stub
+		return repository.save(account);
+	}
 	
 	/*@Override
 	public Flux<Account> findAll() {

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="accounts")
@@ -12,22 +13,27 @@ public class Account {
 	@Id
 	private String id;
 	private String numberAccount;
-	private BigDecimal currentBalance;
+	private BigDecimal currentBalance;	
 	private String  createdAt;
 	private String typeAccount;
 	//private Person person;
 	private String personId;
+	private BigDecimal deposit;
+	private BigDecimal withdraw;
 	
 	private Person person;
 	
-    private List<SavingAccount> saveAccountList;
+	@Transient
+	private List<SavingAccount> savingAccounts;
+	
+    //private SavingAccount savingAccount;
     
     public Account() {
 
 	}
     
 	public Account(String id, String numberAccount, BigDecimal currentBalance, String createdAt, String typeAccount,
-			String personId, Person person, List<SavingAccount> saveAccountList) {
+			String personId,BigDecimal deposit, BigDecimal withdraw, Person person) {
 		this.id = id;
 		this.numberAccount = numberAccount;
 		this.currentBalance = currentBalance;
@@ -35,7 +41,9 @@ public class Account {
 		this.typeAccount = typeAccount;
 		this.personId = personId;
 		this.person = person;
-		this.saveAccountList = saveAccountList;
+		this.deposit = deposit;
+		this.withdraw = withdraw;
+		//this.savingAccount = savingAccount;
 	}
 
 	public String getId() {
@@ -68,11 +76,11 @@ public class Account {
 	public void setTypeAccount(String typeAccount) {
 		this.typeAccount = typeAccount;
 	}
-	public List<SavingAccount> getSaveAccountList() {
-		return saveAccountList;
+	public List<SavingAccount> getSavingAccounts() {
+		return savingAccounts;
 	}
-	public void setSaveAccountList(List<SavingAccount> saveAccountList) {
-		this.saveAccountList = saveAccountList;
+	public void setSavingAccounts(List<SavingAccount> savingAccounts) {
+		this.savingAccounts = savingAccounts;
 	}
 	public String getPersonId() {
 		return personId;
@@ -86,6 +94,24 @@ public class Account {
 	public void setPerson(Person person) {
 		this.person = person;
 	}
+	
+	
+	public BigDecimal getDeposit() {
+		return deposit;
+	}
+
+	public void setDeposit(BigDecimal deposit) {
+		this.deposit = deposit;
+	}
+
+	public BigDecimal getWithdraw() {
+		return withdraw;
+	}
+
+	public void setWithdraw(BigDecimal withdraw) {
+		this.withdraw = withdraw;
+	}
+
 	@Override
 	public String toString() {
 		return "Account [id=" + id + ", numberAccount=" + numberAccount + ", personId=" + personId + ", currentBalance=" + currentBalance + "]";
