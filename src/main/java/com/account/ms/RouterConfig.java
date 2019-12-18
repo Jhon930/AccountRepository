@@ -10,14 +10,14 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import com.account.ms.controller.AccountController;
 
 
-@Configuration
+//@Configuration
 public class RouterConfig {
 	
-	@Bean
+	/*@Bean
 	public RouterFunction<ServerResponse> rutas(AccountController controller){
 		return route(GET("/api/account"), controller::listar)
 				.andRoute(GET("/api/account/{id}"), controller::ver);
 
-	}
+	}*/
 
 }
