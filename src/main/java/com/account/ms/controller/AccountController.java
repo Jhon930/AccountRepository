@@ -2,6 +2,7 @@ package com.account.ms.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import static org.springframework.http.MediaType.*;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.account.ms.mapper.AccountMapper;
 import com.account.ms.models.Account;
@@ -25,13 +29,42 @@ import com.account.ms.models.services.AccountService;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@RestController
+@Component
 public class AccountController {
 	
 	@Autowired
 	private AccountService service;
 	
-	@GetMapping("/person/{person}")
+	public Mono<ServerResponse> listar(ServerRequest request){
+		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
+				.body(service.findAll(), Account.class);
+		 
+	}
+	
+	public Mono<ServerResponse> show(ServerRequest request){
+		String id = request.pathVariable("id");
+		return errorHandler(
+						service.findById(id).flatMap(p-> ServerResponse.ok()
+						.contentType(APPLICATION_JSON_UTF8)
+						.syncBody(p))
+						.switchIfEmpty(ServerResponse.notFound().build())
+				
+				);
+				
+	}
+	
+	public Mono<ServerResponse> findByPerson(ServerRequest request){
+		String dni = request.pathVariable("dni");
+		return errorHandler(
+						service.findByPersonDni(dni).flatMap(p-> ServerResponse.ok()
+						.contentType(APPLICATION_JSON_UTF8)
+						.syncBody(p))
+						.switchIfEmpty(ServerResponse.notFound().build())
+			   );
+	}
+	
+	
+	/*@GetMapping("/person/{person}")
 	public Flux<Account> findByPerson(@PathVariable("person") String personId) {
 		return service.findByPersonId(personId);
 	}
@@ -80,6 +113,20 @@ public class AccountController {
     	return service.update(account, id);
  
     }
+	*/
 	
+	private Mono<ServerResponse> errorHandler(Mono<ServerResponse> response){
+		return response.onErrorResume(error -> {
+			WebClientResponseException errorResponse = (WebClientResponseException) error;
+			if(errorResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
+				Map<String, Object> body = new HashMap<>();
+				body.put("error", "No existe el producto: ".concat(errorResponse.getMessage()));
+				body.put("timestamp", new Date());
+				body.put("status", errorResponse.getStatusCode().value());
+				return ServerResponse.status(HttpStatus.NOT_FOUND).syncBody(body);
+			}
+			return Mono.error(errorResponse);
+		});
+	}
 
 }

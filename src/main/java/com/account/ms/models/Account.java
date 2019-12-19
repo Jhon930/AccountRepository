@@ -1,5 +1,6 @@
 package com.account.ms.models;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -10,30 +11,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection="accounts")
 public class Account {
+	
 	@Id
 	private String id;
 	private String numberAccount;
 	private BigDecimal currentBalance;	
 	private String  createdAt;
 	private String typeAccount;
-	//private Person person;
 	private String personId;
 	private BigDecimal deposit;
 	private BigDecimal withdraw;
-	
 	private Person person;
-	
-	@Transient
-	private List<SavingAccount> savingAccounts;
-	
-    //private SavingAccount savingAccount;
-    
+	private SavingAccount savingAccount;
+
     public Account() {
 
 	}
     
 	public Account(String id, String numberAccount, BigDecimal currentBalance, String createdAt, String typeAccount,
-			String personId,BigDecimal deposit, BigDecimal withdraw, Person person) {
+			String personId,BigDecimal deposit, BigDecimal withdraw, Person person,SavingAccount savingAccount) {
 		this.id = id;
 		this.numberAccount = numberAccount;
 		this.currentBalance = currentBalance;
@@ -43,7 +39,7 @@ public class Account {
 		this.person = person;
 		this.deposit = deposit;
 		this.withdraw = withdraw;
-		//this.savingAccount = savingAccount;
+		this.savingAccount = savingAccount;
 	}
 
 	public String getId() {
@@ -76,12 +72,15 @@ public class Account {
 	public void setTypeAccount(String typeAccount) {
 		this.typeAccount = typeAccount;
 	}
-	public List<SavingAccount> getSavingAccounts() {
-		return savingAccounts;
+	
+	public SavingAccount getSavingAccount() {
+		return savingAccount;
 	}
-	public void setSavingAccounts(List<SavingAccount> savingAccounts) {
-		this.savingAccounts = savingAccounts;
+
+	public void setSavingAccounts(SavingAccount savingAccount) {
+		this.savingAccount = savingAccount;
 	}
+
 	public String getPersonId() {
 		return personId;
 	}

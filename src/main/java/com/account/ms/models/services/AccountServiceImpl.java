@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 
 import static org.springframework.http.MediaType.*;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.account.ms.models.Account;
+import com.account.ms.models.Person;
 import com.account.ms.models.SavingAccount;
 import com.account.ms.repository.AccountRepository;
 import com.account.ms.repository.SavingAccountRepository;
@@ -27,17 +29,43 @@ public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
 	private SavingAccountRepository srepository;
+	
+	@Autowired
+	private WebClient client;
 
 	@Override
 	public Flux<Account> findAll() {
 		// TODO Auto-generated method stub
-		return repository.findAll();
+		return client.get().accept(MediaType.APPLICATION_JSON_UTF8)
+						   .exchange()
+						   .flatMapMany(response-> response.bodyToFlux(Account.class));
 	}
-
+	
+	
 	@Override
 	public Mono<Account> findById(String id) {
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", id);
+		return client.get().uri("/{id}", params)
+				.accept(APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(Account.class);
+				//.exchange()
+				//.flatMap(response -> response.bodyToMono(Account.class));
+	}
+	
+	
+	@Override
+	public Mono<Account> findByPersonDni(String dni) {
 		// TODO Auto-generated method stub
-		return repository.findById(id);
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("dni", dni);
+		return client.get().uri("/{dni}", params)
+				.accept(APPLICATION_JSON)
+				.retrieve()
+				.bodyToMono(Account.class);
+				//.exchange()
+				//.flatMap(response -> response.bodyToMono(Account.class));
 	}
 
 	@Override
@@ -52,11 +80,7 @@ public class AccountServiceImpl implements AccountService {
 		return srepository.save(savingAccount);
 	}*/
 
-	@Override
-	public Flux<Account> findByPersonId(String id){
-		
-		return repository.findByPersonId(id);
-	}
+
 	/*@Override
 	public Mono<Void> delete(Account account) {
 		// TODO Auto-generated method stub
@@ -68,7 +92,7 @@ public class AccountServiceImpl implements AccountService {
 		// TODO Auto-generated method stub
 		return repository.save(account);
 	}
-	
+
 	/*@Override
 	public Flux<Account> findAll() {
 		return client.get().accept(APPLICATION_JSON)
@@ -76,17 +100,7 @@ public class AccountServiceImpl implements AccountService {
 				.flatMapMany(response -> response.bodyToFlux(Account.class));
 	}
 
-	@Override
-	public Mono<Account> findById(String id) {
-		Map<String, Object> params = new HashMap<String, Object>();
-		params.put("id", id);
-		return client.get().uri("/{id}", params)
-				.accept(APPLICATION_JSON)
-				.retrieve()
-				.bodyToMono(Account.class);
-				//.exchange()
-				//.flatMap(response -> response.bodyToMono(Account.class));
-	}
+
 
 	@Override 
 	public Mono<Account> save(Account account) {
