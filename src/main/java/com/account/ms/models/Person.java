@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 public class Person {
 	
+	private String id;
     private String name;
     private String lastName;
     private String dni;
@@ -17,8 +18,16 @@ public class Person {
     private String mobilePhoneNumber;
     private String personType;
     
-    private List<Account> accountList;
-	
+    public Person() {
+		
+	}
+
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	public String getName() {
 		return name;
 	}
@@ -61,12 +70,7 @@ public class Person {
 	public void setPersonType(String personType) {
 		this.personType = personType;
 	}
-	public List<Account> getAccountList() {
-		return accountList;
-	}
-	public void setAccountList(List<Account> accountList) {
-		this.accountList = accountList;
-	}
+
 	
 	
 	

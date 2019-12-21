@@ -21,11 +21,17 @@ public class Account {
 	private String personId;
 	private BigDecimal deposit;
 	private BigDecimal withdraw;
-	private Person person;
+	
+	@Transient
+	private List<Person> persons;
 	private SavingAccount savingAccount;
+	
+	public Account(List<Person> persons) {
+		this.persons = persons;
+	}
 
     public Account() {
-
+    		
 	}
     
 	public Account(String id, String numberAccount, BigDecimal currentBalance, String createdAt, String typeAccount,
@@ -36,7 +42,6 @@ public class Account {
 		this.createdAt = createdAt;
 		this.typeAccount = typeAccount;
 		this.personId = personId;
-		this.person = person;
 		this.deposit = deposit;
 		this.withdraw = withdraw;
 		this.savingAccount = savingAccount;
@@ -80,21 +85,28 @@ public class Account {
 	public void setSavingAccounts(SavingAccount savingAccount) {
 		this.savingAccount = savingAccount;
 	}
-
+	
 	public String getPersonId() {
 		return personId;
 	}
 	public void setPersonId(String personId) {
 		this.personId = personId;
 	}
-	public Person getPerson() {
-		return person;
-	}
-	public void setPerson(Person person) {
-		this.person = person;
-	}
 	
 	
+	
+	public List<Person> getPersons() {
+		return persons;
+	}
+
+	public void setPersons(List<Person> persons) {
+		this.persons = persons;
+	}
+
+	public void setSavingAccount(SavingAccount savingAccount) {
+		this.savingAccount = savingAccount;
+	}
+
 	public BigDecimal getDeposit() {
 		return deposit;
 	}

@@ -1,12 +1,7 @@
 package com.account.ms.models;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document("savingaccounts")
 public class SavingAccount {
 	
-	@Id
 	private String id;
 	private String accountNumber;
 	
