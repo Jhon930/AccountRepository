@@ -13,6 +13,7 @@ public class AccountMapper {
 			if (a.getCurrentBalance() != null) account.setCurrentBalance(a.getCurrentBalance());
 			if (a.getDeposit() != null) account.setDeposit(a.getDeposit());
 			if (a.getWithdraw()!= null) account.setWithdraw(a.getWithdraw());
+			if (a.getPersons() != null) account.setPersons(a.getPersons());
 		}
 		return account;
 	}

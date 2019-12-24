@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 public interface AccountRepository extends ReactiveMongoRepository<Account, String> {
 	
-    @Query(value= "{'person.dni': ?0}")	
+    @Query(value="{'persons.dni': ?0}")	
 	Flux<Account> findByPersonDni(String dni); 
     
 	@Query(value="{'accounts.numberAccount': ?0}")

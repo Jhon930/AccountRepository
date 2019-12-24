@@ -29,6 +29,7 @@ import com.account.ms.models.Person;
 import com.account.ms.models.SavingAccount;
 import com.account.ms.models.services.AccountService;
 import com.account.ms.repository.AccountRepository;
+import com.account.ms.repository.SavingAccountRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,11 +43,14 @@ public class AccountController {
 	private AccountRepository repository;
 	
 	@Autowired
+	private SavingAccountRepository saRepository;
+	
+	@Autowired
     private WebClient.Builder webClientBuilder;
 
 	@GetMapping("/person/{person}")
 	public Flux<Account> findByPerson(@PathVariable("person") String personDni) {
-		LOGGER.info("findByCustomer: dniPerson={}", personDni);
+		LOGGER.info("findByPerson: dni={}", personDni);
 		return repository.findByPersonDni(personDni);
 	}
 
@@ -68,11 +72,17 @@ public class AccountController {
 		return repository.save(account);
 	}
 	
-	@GetMapping("/person/{dni}/clients")
+	@PostMapping("/insert")
+	public Mono<Account> insertAccount(@RequestBody Account data ){
+		return webClientBuilder.build().post().uri("http://localhost:8084/savingaccount/insert").syncBody(data)
+				.retrieve().bodyToMono(Account.class);
+	}
+		
+	@GetMapping("/account/{numaccount}/clients")
 	public Mono<Account> findClientsByNumberAccount(@PathVariable("numaccount") String numaccount) {
 		
 		LOGGER.info("findByNumberAccountWithClients: numaccount={}", numaccount);
-		Flux<Person> clients = webClientBuilder.build().get().uri("http://localhost:8070/person/{person}", numaccount).retrieve().bodyToFlux(Person.class);		
+		Flux<Person> clients = webClientBuilder.build().get().uri("http://localhost:8008/account/{account}", numaccount).retrieve().bodyToFlux(Person.class);		
 		return clients
 				.collectList()
 				.map(c -> new Account(c))
@@ -80,111 +90,5 @@ public class AccountController {
 				.collectList()
 				.map(AccountMapper::map);
 	}
-
-
 	
-	
-	/*@Autowired
-	private AccountService service;
-	
-	@Autowired
-	private AccountRepository repository;
-	
-	@GetMapping
-	public Mono<ServerResponse> listar(ServerRequest request){
-		return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
-				.body(service.findAll(), Account.class);
-		 
-	}
-	
-	@GetMapping("/{id}")
-	public Mono<ServerResponse> show(ServerRequest request){
-		String id = request.pathVariable("id");
-		return errorHandler(
-				service.findById(id).flatMap(p-> ServerResponse.ok()
-						.contentType(APPLICATION_JSON_UTF8)
-						.syncBody(p))
-						.switchIfEmpty(ServerResponse.notFound().build())
-				
-				);
-				
-	}
-	
-	@GetMapping("/person/{person}")
-	public Mono<ServerResponse> findByPerson(ServerRequest request){
-		String dni = request.pathVariable("dni");
-		return errorHandler(
-				service.findByPersonDni(dni).flatMap(p-> ServerResponse.ok()
-						.contentType(APPLICATION_JSON_UTF8)
-						.syncBody(p))
-						.switchIfEmpty(ServerResponse.notFound().build())
-			   );
-	}
-	
-	
-	/*@GetMapping("/person/{person}")
-	public Flux<Account> findByPerson(@PathVariable("person") String personId) {
-		return service.findByPersonId(personId);
-	}
-	
-	@GetMapping
-	public Flux<Account> findAll(){
-	      return service.findAll();
-	}
-	
-	@GetMapping("/{id}")
-	public Mono<Account> findById(@PathVariable("id") String id){
-		return service.findById(id);
-	}
-	
-	@PostMapping
-	public Mono<Account> create(@RequestBody Account account){
-		return service.save(account);
-	}
-	
-	@PutMapping("/updateAccount/{id}")
-    public Mono<Account> insertDeposit(@PathVariable("id") final String id, @RequestBody final Account account){
-  
-        BigDecimal balance = account.getCurrentBalance();
-        BigDecimal deposit = account.getDeposit();
-        //BigDecimal withdraw = new BigDecimal("50.00");
-    	deposit = balance.add(deposit);
-    	//withdraw = balance.subtract(withdraw);
-    	
-    	account.setCurrentBalance(balance);
-    	
-    	return service.update(account, id);
- 
-    }
-    
-    @PutMapping("/updateAccountWithdraw/{id}")
-    public Mono<Account> insertWithdraw(@PathVariable("id") final String id, @RequestBody final Account account){
-  
-        BigDecimal balance = account.getCurrentBalance();
-        BigDecimal withdraw = account.getWithdraw();
-        //BigDecimal withdraw = new BigDecimal("50.00");
-    	withdraw = balance.subtract(withdraw);
-    	//withdraw = balance.subtract(withdraw);
-    	balance = withdraw;
-    	account.setCurrentBalance(balance);
-    	
-    	return service.update(account, id);
- 
-    }
-	*/
-	/*
-	private Mono<ServerResponse> errorHandler(Mono<ServerResponse> response){
-		return response.onErrorResume(error -> {
-			WebClientResponseException errorResponse = (WebClientResponseException) error;
-			if(errorResponse.getStatusCode() == HttpStatus.NOT_FOUND) {
-				Map<String, Object> body = new HashMap<>();
-				body.put("error", "No existe el producto: ".concat(errorResponse.getMessage()));
-				body.put("timestamp", new Date());
-				body.put("status", errorResponse.getStatusCode().value());
-				return ServerResponse.status(HttpStatus.NOT_FOUND).syncBody(body);
-			}
-			return Mono.error(errorResponse);
-		});
-	}
-	*/
 }

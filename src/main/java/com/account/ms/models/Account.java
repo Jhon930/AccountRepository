@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,11 +21,14 @@ public class Account {
 	private BigDecimal currentBalance;	
 	private String  createdAt;
 	private String typeAccount;
-	private String personId;
+	//private String personId;
 	private BigDecimal deposit;
 	private BigDecimal withdraw;
+	private String status;
 	
 	@Transient
+	@Valid
+	@NotNull
 	private List<Person> persons;
 	private SavingAccount savingAccount;
 	
@@ -35,15 +41,15 @@ public class Account {
 	}
     
 	public Account(String id, String numberAccount, BigDecimal currentBalance, String createdAt, String typeAccount,
-			String personId,BigDecimal deposit, BigDecimal withdraw, Person person,SavingAccount savingAccount) {
+			BigDecimal deposit, BigDecimal withdraw, String status, SavingAccount savingAccount) {
 		this.id = id;
 		this.numberAccount = numberAccount;
 		this.currentBalance = currentBalance;
 		this.createdAt = createdAt;
 		this.typeAccount = typeAccount;
-		this.personId = personId;
 		this.deposit = deposit;
 		this.withdraw = withdraw;
+		this.status = status;
 		this.savingAccount = savingAccount;
 	}
 
@@ -77,57 +83,42 @@ public class Account {
 	public void setTypeAccount(String typeAccount) {
 		this.typeAccount = typeAccount;
 	}
-	
 	public SavingAccount getSavingAccount() {
 		return savingAccount;
 	}
-
 	public void setSavingAccounts(SavingAccount savingAccount) {
 		this.savingAccount = savingAccount;
-	}
-	
-	public String getPersonId() {
-		return personId;
-	}
-	public void setPersonId(String personId) {
-		this.personId = personId;
-	}
-	
-	
-	
+	}	
 	public List<Person> getPersons() {
 		return persons;
 	}
-
 	public void setPersons(List<Person> persons) {
 		this.persons = persons;
 	}
-
 	public void setSavingAccount(SavingAccount savingAccount) {
 		this.savingAccount = savingAccount;
 	}
-
 	public BigDecimal getDeposit() {
 		return deposit;
 	}
-
 	public void setDeposit(BigDecimal deposit) {
 		this.deposit = deposit;
 	}
-
 	public BigDecimal getWithdraw() {
 		return withdraw;
 	}
-
 	public void setWithdraw(BigDecimal withdraw) {
 		this.withdraw = withdraw;
 	}
-
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
 	@Override
 	public String toString() {
 		return "Account [id=" + id + ", numberAccount=" + numberAccount + ", currentBalance=" + currentBalance + "]";
 	}
-	
-	
-	
+
 }

@@ -12,6 +12,7 @@ public class AccountMapper {
 			if (a.getNumberAccount() != null) account.setNumberAccount(a.getNumberAccount());
 			if (a.getCreatedAt() != null) account.setCreatedAt(a.getCreatedAt());
 			if (a.getCurrentBalance() != null) account.setCurrentBalance(a.getCurrentBalance());
+			if (a.getPersons() != null) account.setPersons(a.getPersons());
 		}
 		return account;
 	}
