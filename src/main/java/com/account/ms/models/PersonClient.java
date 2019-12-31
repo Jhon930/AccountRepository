@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-public class Person {
+public class PersonClient {
 	
 	private String id;
     private String name;
@@ -18,7 +18,7 @@ public class Person {
     private String mobilePhoneNumber;
     private String personType;
     
-    public Person() {
+    public PersonClient() {
 		
 	}
 

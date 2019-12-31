@@ -25,11 +25,10 @@ import java.util.Map;
 
 import com.account.ms.mapper.AccountMapper;
 import com.account.ms.models.Account;
-import com.account.ms.models.Person;
+import com.account.ms.models.PersonClient;
 import com.account.ms.models.SavingAccount;
 import com.account.ms.models.services.AccountService;
 import com.account.ms.repository.AccountRepository;
-import com.account.ms.repository.SavingAccountRepository;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,16 +41,19 @@ public class AccountController {
 	@Autowired
 	private AccountRepository repository;
 	
-	@Autowired
-	private SavingAccountRepository saRepository;
-	
-	@Autowired
-    private WebClient.Builder webClientBuilder;
+	/*@Autowired
+	private SavingAccountRepository saRepository;*/
 
-	@GetMapping("/person/{person}")
-	public Flux<Account> findByPerson(@PathVariable("person") String personDni) {
+	@GetMapping("/find/{person}")
+	public Mono<Account> findByPerson(@PathVariable("person") String personDni) {
 		LOGGER.info("findByPerson: dni={}", personDni);
 		return repository.findByPersonDni(personDni);
+	}
+	
+	@GetMapping("/find/{numberaccount}")
+	public Mono<Account> findByAccount(@PathVariable("account") String accountnumber) {
+		LOGGER.info("findByPerson: acnnumber={}", accountnumber);
+		return repository.findByNumberAccount(accountnumber);
 	}
 
 	@GetMapping
@@ -66,13 +68,13 @@ public class AccountController {
 		return repository.findById(id);
 	}
 
-	@PostMapping
-	public Mono<Account> create(@RequestBody Account account) {
+	@PostMapping("/insert")
+	public Mono<Account> createAccount(@RequestBody Account account) {
 		LOGGER.info("create: {}", account);
 		return repository.save(account);
 	}
 	
-	@PostMapping("/insert")
+	/*@PostMapping("/insert")
 	public Mono<Account> insertAccount(@RequestBody Account data ){
 		return webClientBuilder.build().post().uri("http://localhost:8084/savingaccount/insert").syncBody(data)
 				.retrieve().bodyToMono(Account.class);
@@ -82,13 +84,14 @@ public class AccountController {
 	public Mono<Account> findClientsByNumberAccount(@PathVariable("numaccount") String numaccount) {
 		
 		LOGGER.info("findByNumberAccountWithClients: numaccount={}", numaccount);
-		Flux<Person> clients = webClientBuilder.build().get().uri("http://localhost:8008/account/{account}", numaccount).retrieve().bodyToFlux(Person.class);		
+		Flux<Client> clients = webClientBuilder.build().get().uri("http://localhost:8008/account/{account}", numaccount).retrieve().bodyToFlux(Client.class);		
 		return clients
 				.collectList()
 				.map(c -> new Account(c))
-				.mergeWith(repository.findPersonByNumberAccount(numaccount))
+				.mergeWith(repository.findByNumberAccount(numaccount))
 				.collectList()
 				.map(AccountMapper::map);
-	}
+	}*/
 	
+
 }

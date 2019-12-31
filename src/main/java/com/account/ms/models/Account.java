@@ -21,19 +21,16 @@ public class Account {
 	private BigDecimal currentBalance;	
 	private String  createdAt;
 	private String typeAccount;
-	//private String personId;
-	private BigDecimal deposit;
-	private BigDecimal withdraw;
 	private String status;
 	
 	@Transient
 	@Valid
 	@NotNull
-	private List<Person> persons;
-	private SavingAccount savingAccount;
+	private List<PersonClient> personclients;
+	//private SavingAccount savingAccount;
 	
-	public Account(List<Person> persons) {
-		this.persons = persons;
+	public Account(List<PersonClient> personclients) {
+		this.personclients = personclients;
 	}
 
     public Account() {
@@ -41,16 +38,13 @@ public class Account {
 	}
     
 	public Account(String id, String numberAccount, BigDecimal currentBalance, String createdAt, String typeAccount,
-			BigDecimal deposit, BigDecimal withdraw, String status, SavingAccount savingAccount) {
+		String status) {
 		this.id = id;
 		this.numberAccount = numberAccount;
 		this.currentBalance = currentBalance;
 		this.createdAt = createdAt;
 		this.typeAccount = typeAccount;
-		this.deposit = deposit;
-		this.withdraw = withdraw;
 		this.status = status;
-		this.savingAccount = savingAccount;
 	}
 
 	public String getId() {
@@ -83,32 +77,11 @@ public class Account {
 	public void setTypeAccount(String typeAccount) {
 		this.typeAccount = typeAccount;
 	}
-	public SavingAccount getSavingAccount() {
-		return savingAccount;
+	public List<PersonClient> getPersons() {
+		return personclients;
 	}
-	public void setSavingAccounts(SavingAccount savingAccount) {
-		this.savingAccount = savingAccount;
-	}	
-	public List<Person> getPersons() {
-		return persons;
-	}
-	public void setPersons(List<Person> persons) {
-		this.persons = persons;
-	}
-	public void setSavingAccount(SavingAccount savingAccount) {
-		this.savingAccount = savingAccount;
-	}
-	public BigDecimal getDeposit() {
-		return deposit;
-	}
-	public void setDeposit(BigDecimal deposit) {
-		this.deposit = deposit;
-	}
-	public BigDecimal getWithdraw() {
-		return withdraw;
-	}
-	public void setWithdraw(BigDecimal withdraw) {
-		this.withdraw = withdraw;
+	public void setPersons(List<PersonClient> personclients) {
+		this.personclients = personclients;
 	}
 	public String getStatus() {
 		return status;
